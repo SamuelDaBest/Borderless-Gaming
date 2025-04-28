@@ -1,0 +1,22 @@
+name: Build Executable
+on: [workflow_dispatch] # Allows manual triggering
+jobs:
+  build:
+    runs-on: windows-latest # Windows is required for .NET desktop apps
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x' # Adjust to match the project's .NET version
+      - name: Restore dependencies
+        run: dotnet restore BorderlessGaming.sln
+      - name: Build Release
+        run: dotnet build BorderlessGaming.sln --configuration Release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Executable
+          path: |
+            BorderlessGaming/bin/Release/net*/**/*.exe
+            BorderlessGaming/bin/Release/net*/**/*.dll
